@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Done</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      margin-top: 100px;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .logo-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 60px;
+      align-items: center;
+    }
+    
+    .logo-wrapper img {
+      height: auto;
+      object-fit: contain;
+      max-width: 170px;
+    }
+    
+    .message {
+      font-size: 22px;
+      line-height: 1.5;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    @media screen and (max-width: 600px) {
+      .logo-wrapper {
+        justify-content: space-around;
+      }
+      
+      .logo-wrapper img {
+        width: 120px;
+      }
+      
+      .message {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-wrapper">
+      <img src="android-chrome-192x192.png" width="170" alt="SmaRTWork Logo" />
+      <img src="images/ntnu-android-chrome-192x192.png" width="170" alt="NTNU Logo" />
+    </div>
+    
+    <div class="message">
+      Ditt nye passord er registrert. Instruksjonsvideo og beskrivelse av hvordan du installerer appen finner du på prosjektets hjemmeside: 
+      <a href="https://www.smartwork.no/teknisk-hjelp/" target="_blank">https://www.smartwork.no/teknisk-hjelp/</a>
+    </div>
+  </div>
+</body>
+</html>

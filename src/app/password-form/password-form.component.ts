@@ -12,11 +12,12 @@ export class PasswordFormComponent implements OnInit {
 
   loginForm! : FormGroup;
   username: string = '';
+  submitted: boolean = false;
 
   
   constructor(
     private fb: FormBuilder,
-    private backendService: BackendService,
+    public backendService: BackendService,
     private route: ActivatedRoute,
     private router: Router
 
@@ -36,14 +37,9 @@ export class PasswordFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // Get username from query params
-    this.route.queryParams.subscribe(params => {
-      this.username = params['username'];
-      if (!this.username) {
-        console.error('No username provided in URL');
-        // Optionally redirect to an error page or show an error message?
-      }
-    });
+  this.backendService.username$.subscribe(username => {
+    this.username = username;
+  });
    
     this.loginForm.valueChanges.subscribe(() => {
       console.log('Form valid:', this.loginForm.valid);
@@ -77,9 +73,8 @@ export class PasswordFormComponent implements OnInit {
       const password = this.loginForm.get('password')?.value;
       
       this.backendService.setUserPassword(password).subscribe({
-        next: (response) => {
-          console.log('Password set successfully:', response);
-          // Handle successful password set (e.g., show success message, redirect)
+        next: (_) => {
+          window.location.href = 'assets/Done.html';
         },
         error: (error) => {
           console.error('Error setting password:', error);

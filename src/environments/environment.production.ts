@@ -2,7 +2,8 @@ export const environment = {
     production: true,
     backend: {
       endpoints:{
-        savePasswordUrl: "http://smartwork-dev-dashboard.idi.ntnu.no/",
+        savePasswordUrl:  "https://smartwork-dev-backend-user.idi.ntnu.no/login/app_credentials",
+        validateTokenUrl: "https://smartwork-dev-backend-user.idi.ntnu.no/login/validate_token"
       }
     }
   };

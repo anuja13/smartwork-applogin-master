@@ -1,34 +1,86 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, BehaviorSubject  } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Appuser } from '../appuser';
 import { environment } from '../../environments/environment';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
   private username: string = '';
+  private token: string = '';
+  private tokenValid: boolean = false;
+
+   // Add BehaviorSubjects to emit value changes
+   private usernameSubject = new BehaviorSubject<string>('');
+   private tokenValidSubject = new BehaviorSubject<boolean>(false);
+   
+   // Expose the observables 
+   public username$ = this.usernameSubject.asObservable();
+   public tokenValid$ = this.tokenValidSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute
   ) {
     this.route.queryParams.subscribe(params => {
-      this.username = params['username'];
+      this.token = params['token'];
+      if (this.token) {
+        this.validateToken();
+      }
     });
    }
 
-   setUserPassword(password: string): Observable<Appuser> {
+    // Validate token and get username
+  private validateToken(): void {
+    this.http.get(`${environment.backend.endpoints.validateTokenUrl}?token=${this.token}`, 
+      { responseType: 'text' })
+      .pipe(
+        map(response => {
+          this.username = response;
+          this.tokenValid = true;
+          // Emit the new values to subscribers
+          this.usernameSubject.next(this.username);
+          this.tokenValidSubject.next(true);
+          
+          return true;
+        }),
+        catchError(error => {
+          this.tokenValid = false;
+          this.tokenValidSubject.next(false);
+          console.error('Token validation error:', error);
+          return of(false);
+        })
+      )
+      .subscribe();
+  }
+
+   setUserPassword(password: string): Observable<any> {
+    console.log('In backend setUserPassword:', this.username);
+    if (!this.tokenValid) {
+      return of({ success: false, message: 'Link expired or invalid' });
+    }
     const user: Appuser = {
       username: this.username,
       password: password
     };
-    return this.http.post<Appuser>(environment.backend.endpoints.savePasswordUrl, user);
+    return this.http.post<string>(environment.backend.endpoints.savePasswordUrl, user,
+      { responseType: 'text' as 'json' }
+    );
   }
 
   getCurrentUsername(): string {
     return this.username;
+  }
+
+  isTokenValid(): boolean {
+    return this.tokenValid;
+  }
+
+  getToken(): string {
+    return this.token;
   }
 }
